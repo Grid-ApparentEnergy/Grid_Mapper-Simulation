@@ -2,6 +2,8 @@
 
 This guide explains how to set up PostgreSQL locally and **load a pre-built grid database from a `.dump` file**.
 
+**Link for dump file** - https://drive.google.com/file/d/1023vpSZ5nB8Cx5LV3m7i53oeu2ZqSWVT/view?usp=sharing
+
 ## Prerequisites
 
 1. **PostgreSQL 12+** installed
@@ -172,8 +174,12 @@ API_PORT=5000
 - `GET /api/grid-data/towers` - Get towers only
 - `GET /api/grid-data/poles` - Get poles only
 - `GET /api/grid-data/substations` - Get substations only
-- `GET /api/grid-data/statistics` - Get grid statistics
 - `GET /api/health` - Health check
+
+**Query Parameters:**
+- `min_lon`, `min_lat`, `max_lon`, `max_lat` - Geographic geographic bounds (used by Infrastructure Planner clip mode)
+- `min_voltage` - Minimum voltage filter (kV)
+- `region` - Predefined region preset (e.g., 'delhi')
 
 ### 8. Start Dashboard
 
@@ -320,36 +326,19 @@ VACUUM ANALYZE;
 The complete data pipeline (using a `.dump` file):
 
 1. **Restore**: Load the provided PostgreSQL `.dump` into `grid_db`
-2. **(Optional) Process**: `process_gridkit_data.py` - Creates/updates network structure (vertices, links, nodes)
 3. **API Server**: `api_server.py` - Serves grid data from PostgreSQL to frontend
 4. **Frontend**: React dashboard fetches data directly from API (no JSON export needed)
-
-**Note:** Scripts like `import_geojson_to_db.py` are now optional/advanced and only needed if you want to build or modify the grid from raw GeoJSON.
 
 ## File Structure
 
 ```
 core/
 ├── FinalSchema.sql              # Database schema definition
-├── import_geojson_to_db.py      # (Optional) Import GeoJSON → PostgreSQL
-├── process_gridkit_data.py      # (Optional) Process raw data → Network format
-├── db_connection.py              # Database connection utilities
-├── db_loader.py                 # Load data from PostgreSQL
+├── db_connection.py             # Database connection utilities
+├── db_loader.py                 # Load spatial data from PostgreSQL
 ├── api_server.py                # Flask API server (serves data to frontend)
-├── export_grid_data_db.py       # [DEPRECATED] Export to JSON (optional)
-└── requirements.txt             # Python dependencies
+├── DB_SETUP_GUIDE.md            # This guide
+├── requirements.txt             # Python dependencies
+├── .env.example                 # Environment variables template
+└── .env                         # Environment variables (created by user)
 ```
-
-## Next Steps
-
-1. **Build REST API** (optional): Create Flask/FastAPI endpoints for dynamic data access
-2. **Real-time Updates**: Implement WebSocket for live fault simulation
-3. **Advanced Analytics**: Use pgRouting for network analysis
-4. **Backup Strategy**: Set up automated database backups
-
-## Support
-
-For issues or questions:
-1. Check PostgreSQL logs: `/var/log/postgresql/` (Linux) or Event Viewer (Windows)
-2. Verify PostGIS: `SELECT PostGIS_Full_Version();`
-3. Test connection: `cd core && python db_connection.py`
