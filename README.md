@@ -8,7 +8,7 @@ A comprehensive real-time smart grid visualization and simulation platform for I
 - **Real-time Visualization**: Interactive Leaflet map displaying transmission lines, substations, towers, and poles with voltage-based color coding
 - **Grid Simulation**: Energize/de-energize grid segments with BFS-based power flow simulation
 - **Fault Analysis**: Inject faults into transmission lines and visualize cascading impacts with bridge fault detection
-- **Intelligent Sensor Placement**: Interval-based sensor placement (L=50 poles) with strategic positioning at substations and path endpoints
+- **Intelligent Sensor Placement**: Interval-based sensor placement (L=50 poles) with strategic 300m exclusion zones around substations and coverage at path endpoints
 - **Sensor Predictor**: Client-side estimation tool that predicts sensor counts using Rules R1–R3 (Feeder Exit, DFS Interval, Dead-end) with research-backed formulations
 - **Real-Time Weather Risk**: Live Open-Meteo API integration that dynamically shrinks the sensor placement interval L in regions with severe 72h weather forecasts (cyclones, floods, lightning)
 - **Infrastructure Planner**: Standalone tool for defining grid topology via PostGIS Search & Clip, Manual Drawing, and File Import (GeoJSON/CSV)
@@ -16,10 +16,10 @@ A comprehensive real-time smart grid visualization and simulation platform for I
 - **Geographic Area Selection**: Select specific regions for focused analysis
 
 ### Advanced Features
-- **Interval-Based Sensor System**: Places sensors every L poles with strategic placement at:
-  - One sensor per substation (power source monitoring)
-  - Endpoint sensors at DFS path terminals
-  - Regular interval sensors for comprehensive coverage
+- **Interval-Based Sensor System**: Places sensors every L poles via DFS traversal featuring:
+  - 300m exclusion zones around substations to prevent redundant coverage
+  - Sensors at the precise start and end of all energized wire paths
+  - Regular interval sensors for comprehensive mid-span coverage
 - **Sensor Metrics Dashboard**: Real-time display of:
   - Total Poles (N)
   - Sensors Placed (k)
@@ -147,8 +147,8 @@ The application will be available at `http://localhost:5173`
 ### Simulation Page (Full Features)
 1. Navigate to `/simulation`
 2. **Select Area** (optional): Draw a rectangle to focus on a specific region
-3. **Energize Grid**: Click to power up the grid from substations
-4. **Deploy Sensors**: Places sensors every 50 poles with strategic positioning
+3. **Energize Grid**: Click to power up the grid from all combined sources 
+4. **Deploy Sensors**: Places sensors every L poles, dynamically avoiding 300m substation radii
 5. **Trigger Fault**: Inject random or bridge faults to test resilience
 6. **Analyze Impact**: View affected lines, sensor readings, and fault isolation
 
@@ -169,7 +169,7 @@ The application will be available at `http://localhost:5173`
 5. **Node Interactions**:
    - Toggle poles into substations by clicking them
    - Manually place/remove sensors on specific towers
-6. **Execution**: Adjust the sensor interval (L) and click Run Sensor Placement** to compute results
+6. **Execution**: Adjust the sensor interval (L) and click **Run Sensor Placement** to compute results
 
 The system uses a recursive DFS-based rule system:
 - **R1 (Feeder Exit)**: One sensor per feeder leaving a substation cluster (IEC 61850)
@@ -245,6 +245,14 @@ proxy: {
 - `min_lon`, `min_lat`, `max_lon`, `max_lat` - Region bounds
 - `min_voltage` - Minimum filter (kV)
 - `region` - Predefined region (e.g., 'delhi')
+
+## Contributing
+
+This project is part of the Apparent Energy research initiative. For contributions or questions, please refer to the project documentation.
+
+## License
+
+This project is part of the Apparent Energy research initiative.
 
 ## Additional Resources
 
