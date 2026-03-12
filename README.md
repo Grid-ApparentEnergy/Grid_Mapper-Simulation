@@ -169,7 +169,7 @@ The application will be available at `http://localhost:5173`
 5. **Node Interactions**:
    - Toggle poles into substations by clicking them
    - Manually place/remove sensors on specific towers
-6. **Execution**: Adjust the sensor interval (L) and click **🚀 Run Sensor Placement** to compute results
+6. **Execution**: Adjust the sensor interval (L) and click Run Sensor Placement** to compute results
 
 The system uses a recursive DFS-based rule system:
 - **R1 (Feeder Exit)**: One sensor per feeder leaving a substation cluster (IEC 61850)
