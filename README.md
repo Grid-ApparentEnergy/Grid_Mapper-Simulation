@@ -5,7 +5,6 @@ A comprehensive real-time smart grid visualization and simulation platform for I
 ## Features
 
 ### Core Capabilities
-
 - **Real-time Visualization**: Interactive Leaflet map displaying transmission lines, substations, towers, and poles with voltage-based color coding
 - **Grid Simulation**: Energize/de-energize grid segments with BFS-based power flow simulation
 - **Fault Analysis**: Inject faults into transmission lines and visualize cascading impacts with bridge fault detection
@@ -14,10 +13,9 @@ A comprehensive real-time smart grid visualization and simulation platform for I
 - **Real-Time Weather Risk**: Live Open-Meteo API integration that dynamically shrinks the sensor placement interval L in regions with severe 72h weather forecasts (cyclones, floods, lightning)
 - **Infrastructure Planner**: Standalone tool for defining grid topology via PostGIS Search & Clip, Manual Drawing, and File Import (GeoJSON/CSV)
 - **Substation-Based Power Sources**: Uses actual substation locations as power sources instead of virtual nodes
-ion**: Select specific regions for focused analysis
+- **Geographic Area Selection**: Select specific regions for focused analysis
 
 ### Advanced Features
-
 - **Interval-Based Sensor System**: Places sensors every L poles with strategic placement at:
   - One sensor per substation (power source monitoring)
   - Endpoint sensors at DFS path terminals
@@ -30,7 +28,6 @@ ion**: Select specific regions for focused analysis
   - Strategic vs Interval sensor breakdown
 - **Fault Isolation**: Identifies specific L-pole intervals between last alive and first dead sensor
 - **Smart Filtering**: Hides dead-from-start wires while showing fault-affected lines
-## Project Structuren dark-mode interface with responsive design
 
 ## Project Structure
 
@@ -69,7 +66,7 @@ Grid_demo/
 │   └── DB_SETUP_GUIDE.md        # Database setup instructions
 ├── FUNCTION_DOCUMENTATION.md    # Detailed function documentation
 └── README.md                    # This file
-## Getting Started
+```
 
 ## Getting Started
 
@@ -90,7 +87,7 @@ Grid_demo/
 
 ```bash
 # Install PostgreSQL with PostGIS
-# Follow instruct.md
+# Follow instructions in core/DB_SETUP_GUIDE.md
 
 # Create database
 createdb grid_db
@@ -117,7 +114,7 @@ pip install -r requirements.txt
 
 # Configure environment
 cp .env.example .env
-# Edit .env with yals
+# Edit .env with your database credentials
 
 # Start API server
 python api_server.py
@@ -137,19 +134,17 @@ npm install
 npm run dev
 ```
 
-## Usagetion will be available at `http://localhost:5173`
+The application will be available at `http://localhost:5173`
 
 ## Usage
 
 ### Dashboard Page (Display Only)
-
 1. Navigate to `/dashboard`
 2. View the complete India power grid
 3. Explore transmission lines colored by voltage
 4. View substations and infrastructure
 
 ### Simulation Page (Full Features)
-
 1. Navigate to `/simulation`
 2. **Select Area** (optional): Draw a rectangle to focus on a specific region
 3. **Energize Grid**: Click to power up the grid from substations
@@ -158,9 +153,8 @@ npm run dev
 6. **Analyze Impact**: View affected lines, sensor readings, and fault isolation
 
 ### Sensor Predictor Page
-
 1. Navigate to `/sensor-predictor`
-2. Adjust sliders for graps, substations, dead-end %, etc.)
+2. Adjust sliders for graph topology (nodes, substations, dead-end %, etc.)
 3. Choose a geographic region to fetch live 72-hour weather forecast data (Open-Meteo API)
 4. View estimated sensor counts across Rules R1–R3 in real-time, adjusted dynamically based on weather risk
 5. Analyze sensitivity to Recursive DFS interval L
@@ -168,17 +162,16 @@ npm run dev
 7. Export coverage reports
 
 ### Infrastructure Planner Page
-
-6. **Execution**: Adjust the sensor interval (L) and click Run Sensor Placement to compute results.
- NCR" preset to fetch real-world infrastructure from PostGIS
+1. Navigate to `/infrastructure-planner`
+2. **Search & Clip**: Enter coordinate bounds or load the "Delhi NCR" preset to fetch real-world infrastructure from PostGIS
 3. **File Import**: Drag and drop `.geojson` or `.csv` files to import custom topologies
 4. **Drawing Mode**: Use the Polyline tool to draw transmission lines; vertices automatically become poles
 5. **Node Interactions**:
    - Toggle poles into substations by clicking them
    - Manually place/remove sensors on specific towers
-6. **Execution**: Adjust the sensor interval (L) and click Run Sensor Placement to compute results
+6. **Execution**: Adjust the sensor interval (L) and click **🚀 Run Sensor Placement** to compute results
 
-The system uses a rsive DFS-based rule system:
+The system uses a recursive DFS-based rule system:
 - **R1 (Feeder Exit)**: One sensor per feeder leaving a substation cluster (IEC 61850)
 - **R2 (DFS Interval)**: Sensor every L hops along recursive DFS paths (IEEE C37.118, CEA India)
 - **R3 (Dead-end)**: Sensor at every terminal/leaf node (graph domination theory)
@@ -186,9 +179,9 @@ The system uses a rsive DFS-based rule system:
 - **Coverage guarantee**: Every node within L hops of the nearest sensor
 
 ### Fault Detection
-## Configuration
+
 When a fault occurs:
-1. System identifi dead sensor
+1. System identifies first dead sensor
 2. Isolates fault to specific L-pole interval
 3. Shows interval between last alive (S_i) and first dead (S_{i+1}) sensor
 4. Displays number of poles in faulty interval
@@ -208,8 +201,7 @@ API_PORT=5000
 ```
 
 ### Frontend (vite.config.js)
-
-## Key Technologies
+```javascript
 proxy: {
   '/api': {
     target: 'http://localhost:5000',
@@ -230,7 +222,7 @@ proxy: {
 - Flask (REST API)
 - PostgreSQL + PostGIS (spatial database)
 - psycopg2 (database driver)
-## API Endpointsnfiguration)
+- python-dotenv (configuration)
 
 **Algorithms:**
 - BFS (Breadth-First Search) for energization
@@ -245,33 +237,22 @@ proxy: {
 - `GET /api/grid-data/buses` - Get bus/vertex data
 - `GET /api/grid-data/lines` - Get transmission lines
 - `GET /api/grid-data/towers` - Get tower locations
-## Contributingata/poles` - Get pole locations
+- `GET /api/grid-data/poles` - Get pole locations
 - `GET /api/grid-data/substations` - Get substation data
 - `GET /api/health` - Health check
 
-## Licenseameters
-
+### Query Parameters
 - `min_lon`, `min_lat`, `max_lon`, `max_lat` - Region bounds
-- `min_voltage` - Minimum voltage filter (kV)
-## Additional Resourcesgion (e.g., 'delhi')
-
-## Contributing
-
-This project is part of the Apparent Energy research initiative. For contributions or questions, please refer to the project documentation.
-
-## License
-## Future Enhancements
-This project is part of the Apparent Energy research initiative.
+- `min_voltage` - Minimum filter (kV)
+- `region` - Predefined region (e.g., 'delhi')
 
 ## Additional Resources
 
 - [Function Documentation](FUNCTION_DOCUMENTATION.md) - Detailed documentation of all functions
 - [Database Setup Guide](core/DB_SETUP_GUIDE.md) - PostgreSQL/PostGIS setup instructions
-- [Original Implementation](original/) gacy codebase for reference
-- [Multi-Source Implementation](multisource/) - Alternative implementation
 
 ## Future Enhancements
-Built by the Apparent Energy Team
+
 - Real-time data streaming
 - Machine learning for fault prediction
 - Multi-user collaboration
